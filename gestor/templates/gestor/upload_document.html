@@ -1,0 +1,87 @@
+<!-- gestor/templates/gestor/upload_document.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Subir Documento</title>
+    <style>
+        .drop-zone {
+            width: 50%;  /* Limita el ancho del cuadro al 50% del contenedor */
+            max-width: 400px;  /* Ancho máximo */
+            padding: 50px;
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            text-align: center;
+            color: #007bff;
+            font-weight: bold;
+            margin: 20px auto;  /* Centra el cuadro horizontalmente */
+        }
+        .drop-zone.dragover {
+            background-color: #e9ecef;
+        }
+        .file-preview {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Subir Documento</h2>
+    <form id="upload-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Campo de selección de caso -->
+        <label for="id_case">Selecciona un caso:</label>
+        {{ form.case }}  <!-- Django renderiza el campo de selección de casos aquí -->
+        <!-- Campo de selección de documento -->
+        <div class="drop-zone" id="drop-zone">
+            Arrastra y suelta el archivo aquí o haz clic para seleccionarlo
+            <input type="file" id="file-input" name="file" style="display: none;">
+        </div>
+        <!-- Vista previa de archivos seleccionados -->
+        <div class="file-preview" id="file-preview"></div>
+        <button type="submit">Subir</button>
+    </form>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const filePreview = document.getElementById('file-preview');
+
+        // Cuando se hace clic en el cuadro de drag & drop
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // Cambiar el estilo cuando el archivo está sobre el cuadro
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+
+        // Manejar el archivo cuando se suelta en el cuadro
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                fileInput.files = files;
+                showFilePreview(files);   // Muestra la vista previa de archivos
+            }
+        });
+
+        // Muestra la vista previa cuando se selecciona un archivo
+        fileInput.addEventListener('change', (e) => showFilePreview(e.target.files));
+
+        // Función para mostrar el nombre de los archivos seleccionados
+        function showFilePreview(files) {
+            filePreview.innerHTML = '';  // Limpia la vista previa anterior
+            for (const file of files) {
+                const fileItem = document.createElement('p');
+                fileItem.textContent = file.name;
+                filePreview.appendChild(fileItem);
+            }
+        }
+    </script>
+</body>
+</html>

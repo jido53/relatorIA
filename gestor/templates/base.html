@@ -1,0 +1,29 @@
+<!-- gestor/templates/base.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Mi Aplicación{% endblock %}</title>
+</head>
+<body>
+
+    <!-- Barra de navegación -->
+    <nav>
+        {% if user.is_authenticated %}
+            <span>Bienvenido, {{ user.username }}</span>  <!-- Muestra el nombre de usuario -->
+            <a href="{% url 'logout' %}">Cerrar Sesión</a>
+             
+
+        {% else %}
+            <span>Debes conectarte</span>  <!-- Muestra mensaje para usuarios no autenticados -->
+            <a href="{% url 'login' %}">Iniciar Sesión</a> <!-- Link para iniciar sesión -->
+        {% endif %}
+    </nav>
+
+    <!-- Contenido de la página -->
+    <div>
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>

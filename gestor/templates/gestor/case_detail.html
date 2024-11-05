@@ -1,0 +1,46 @@
+<!-- gestor/templates/gestor/case_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}Detalle del Caso{% endblock %}
+
+{% block content %}
+    <h1>Detalle del Caso</h1>
+    <p><strong>Jurisdicción:</strong> {{ case.jurisdiction }}</p>
+    <p><strong>Descripción:</strong> {{ case.description }}</p>
+    <p><strong>Tipo de Caso:</strong> {{ case.case_type }}</p>
+    <p><strong>Creado por:</strong> {{ case.created_by.username }}</p>
+    <p><strong>Fecha de Creación:</strong> {{ case.created_at }}</p>
+
+    <h2>Documentos Relacionados</h2>
+    <ul>
+        {% for document in documents %}
+            <li>
+                <strong>{{ document.title }}</strong> - <a href="{{ document.file.url }}" download>Descargar</a>
+                <ul>
+                    {% for entity in document.entities.all %}
+                        <li>
+                            <strong>{{ entity.entity_type.name }}:</strong> {{ entity.value }}
+                            <p>{{ entity.description }}</p>
+    
+                            <!-- Subentidades -->
+                            {% if entity.sub_entities.all %}
+                                <ul>
+                                    {% for sub_entity in entity.sub_entities.all %}
+                                        <li>
+                                            <strong>{{ sub_entity.entity_type.name }}:</strong> {{ sub_entity.value }}
+                                            <p>{{ sub_entity.description }}</p>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% empty %}
+                        <li>No hay entidades asociadas a este documento.</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% empty %}
+            <li>No hay documentos asociados a este caso.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

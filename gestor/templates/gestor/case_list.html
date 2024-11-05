@@ -1,0 +1,16 @@
+<!-- gestor/templates/gestor/case_list.html -->
+{% extends 'base.html' %}
+
+{% block title %}Lista de Casos{% endblock %}
+
+{% block content %}
+    <h1>Lista de Casos</h1>
+    <ul>
+        {% for case in cases %}
+            <li>
+                <a href="{% url 'case-detail' case.pk %}">{{ case.jurisdiction }} - {{ case.description|truncatewords:10 }}</a>
+                (Tipo: {{ case.case_type }})
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
